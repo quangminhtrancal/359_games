@@ -27,11 +27,13 @@ int return_startgame2(int offset_color);
  void drawgameinterface(int x, int y, int lx, int ly);
  void drawstart(int x, int y, int lx, int ly) ;
  void drawstart2(int x, int y, int lx, int ly)  ;
+ void initialize_gamearray();
 
 
-
-int originx=500;
-int originy=100;
+//int originx=500;
+//int originy=100;
+int originx=50;
+int originy=50;
 
 int width_bg=960;
 int height_bg=640;
@@ -39,8 +41,12 @@ int height_bg=640;
 int background = 000000377;
 
 int startbrick_y=90;
-//int startpaddle_y=750;
-//int startball_y=startpaddle_y-20;
+
+// one ball is one element size 32x32
+// one brick is three element size
+// one paddle is 4 element size
+// one value pack is 2 element size?
+
 
 int width_ball=32; 
 int height_ball=32; 
@@ -65,6 +71,7 @@ int ballx;
 int bally;
 int miny[10];
 int gamestate=0;
+int gamearray[20][30];
 
 // Size of ball is 20x20
 void drawball(int x, int y, int lx, int ly){
@@ -77,6 +84,10 @@ void drawball(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
+	// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	gamearray[indexy][indexx]=2;
 	
 }
 
@@ -93,6 +104,10 @@ void clearball(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	gamearray[indexy][indexx]=0;
 	
 }
 
@@ -127,9 +142,7 @@ void clearslowball(int x, int y, int lx, int ly){
 
 // size of paddle is 80x20
 void drawpaddle(int x, int y, int lx, int ly){
-	
-	//	te();
-		
+
 	int offset_color=0;
 	int color=0;
 
@@ -140,7 +153,13 @@ void drawpaddle(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
-	
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	gamearray[indexy][indexx]=10;
+	gamearray[indexy][indexx+1]=11;
+	gamearray[indexy][indexx+2]=11;
+	gamearray[indexy][indexx+3]=10;
 }
 
 void clearpaddle(int x, int y, int lx, int ly){
@@ -157,6 +176,12 @@ void clearpaddle(int x, int y, int lx, int ly){
 			DrawPixel(x+j,y+i,color);
 			offset_color+=4;
 		}
+	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<4; i++){
+		gamearray[indexy][indexx+i]=0;
 	}
 	
 }
@@ -176,6 +201,12 @@ void drawredbrick(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<3; i++){
+		gamearray[indexy][indexx+i]=8;
+	}
 }
 
 void drawgreenbrick(int x, int y, int lx, int ly){
@@ -192,7 +223,14 @@ void drawgreenbrick(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<3; i++){
+		gamearray[indexy][indexx+i]=7;
+	}
 }
+
 
 void drawbluebrick(int x, int y, int lx, int ly){
 	
@@ -207,6 +245,12 @@ void drawbluebrick(int x, int y, int lx, int ly){
 			DrawPixel(x+j,y+i,color);
 			offset_color+=4;
 		}
+	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<3; i++){
+		gamearray[indexy][indexx+i]=9;
 	}
 }
 
@@ -224,6 +268,12 @@ void drawwhitebrick(int x, int y, int lx, int ly){
 			offset_color+=4;
 		}
 	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<3; i++){
+		gamearray[indexy][indexx+i]=6;
+	}
 }
 
 void clearbrick(int x, int y, int lx, int ly){
@@ -240,6 +290,12 @@ void clearbrick(int x, int y, int lx, int ly){
 			DrawPixel(x+j,y+i,color);
 			offset_color+=4;
 		}
+	}
+		// assign memory value
+	int indexx=convert_x(x);
+	int indexy=convert_y(y);
+	for (int i=0; i<3; i++){
+		gamearray[indexy][indexx+i]=0;
 	}
 }
 
@@ -458,20 +514,29 @@ void initialize_ymin(){
 	printf("\n");
 }
 
+// Convert from x and y in the real table to the 
+int convert_x(int x){
+	return ((x-originx)/32);
+}
+
+int convert_y(int y){
+	return ((y-originx)/32);
+}
+void printmemory(){
+	for(int i=0; i<20; i++){
+		for (int j=0; j<30; j++){
+			printf("%d ",gamearray[i][j]);
+		}
+		printf("\n");
+	}
+}
+
 void draw(){
 	
 	
-	//drawgameinterface(100,100,1024,704);
-	//drawstart(500,300,320,160);
-	//drawstart2(700,300,320,160);
-	//drawquit(700,500,320,160);
-	//drawquit2(500,500,320,160);
-
-	
-
-	
-	
+	initialize_gamearray();
 	paddlex=originx+width_bggame/2-width_paddle/2;
+	
 	paddley=originy+height_bggame-paddlegap;
 	ballx=originx+width_bggame/2-width_ball/2;
 	bally=paddley-32;
@@ -513,6 +578,8 @@ void draw(){
 	initialize_ymin();
 	
 
+	printmemory();
+
 
 	while(gamestate==0){
 		
@@ -523,7 +590,6 @@ void draw(){
 			//printf("State %d startball=%d check=%d\n",gamestate, startball, check);
 			read=readSnes();
 			if (read==65534){
-				printf("B is pressed");
 				startball=1;
 				
 			}
